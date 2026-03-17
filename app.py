@@ -8,7 +8,7 @@ import os
 import io
 
 st.set_page_config(page_title="電力分析レポート", layout="wide")
-st.title("📊 電力消費クラスタリング・フルレポートツール")
+st.title("電力消費クラスタリング・フルレポートツール")
 
 # --- 1. セッション状態の初期化 ---
 if 'analyzed' not in st.session_state:
