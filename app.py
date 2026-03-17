@@ -7,6 +7,29 @@ import plotter
 import os
 import io
 
+# 簡易パスワードチェック
+def check_password():
+    def password_entered():
+        if st.session_state["password"] == "acorn": # ここに好きなパスワードを設定
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # セッションに残さない
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        st.text_input("パスワードを入力してください", type="password", on_change=password_entered, key="password")
+        return False
+    elif not st.session_state["password_correct"]:
+        st.text_input("パスワードが違います", type="password", on_change=password_entered, key="password")
+        st.error("😕 パスワードが正しくありません")
+        return False
+    else:
+        return True
+
+if not check_password():
+    st.stop()  # パスワードが合っていなければここで処理を止める
+
+# --- ここから下に元の解析コードを書く ---
 st.set_page_config(page_title="電力分析レポート", layout="wide")
 st.title("電力消費クラスタリング・フルレポートツール")
 
