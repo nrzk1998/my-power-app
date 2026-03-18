@@ -31,7 +31,7 @@ if not check_password():
 
 # --- ここから下に元の解析コードを書く ---
 st.set_page_config(page_title="電力分析レポート", layout="wide")
-st.title("電力消費クラスタリング・フルレポートツール")
+st.title("電力消費クラスタリングツール")
 
 # --- 1. セッション状態の初期化 ---
 if 'analyzed' not in st.session_state:
@@ -52,7 +52,7 @@ with st.sidebar:
     auto_k = st.checkbox("自動決定", value=True)
     k_input = st.slider("クラスタ数 (k)", 2, 10, 4) if not auto_k else None
     
-    run_btn = st.button("🚀 分析実行", use_container_width=True)
+    run_btn = st.button("分析実行", use_container_width=True)
 
 # --- 2. 分析実行ロジック ---
 if run_btn and uploaded_file:
