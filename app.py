@@ -60,6 +60,7 @@ if run_btn and uploaded_file:
         with st.spinner("解析レポートを作成中..."):
             # データ読み込みと加工
             df_raw = pd.read_csv(uploaded_file, index_col=0)
+            df_raw = df_raw[df_raw.index.notna()]
             df_raw.index = pd.to_datetime(df_raw.index)
             df_raw.index.name = 'Date'
             
