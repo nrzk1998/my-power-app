@@ -33,11 +33,12 @@ def load_station_codes(target_name):
     
     return prec_no, block_no
 
-def get_weather_data(station_name, base_year):
+def get_weather_data(station_name, start_date, end_date):
     """気象データを取得。キャッシュがあれば読み込み、なければスクレイピング。"""
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
-    cache_path = os.path.join(DATA_DIR, f"weather_{station_name}_{base_year}.csv")
+    date_range_str = f"{start_date.strftime('%Y%m%d')}-{end_date.strftime('%Y%m%d')}"
+    cache_path = os.path.join(DATA_DIR, f"weather_{station_name}_{date_range_str}.csv")
     
     # キャッシュ確認
     if os.path.exists(cache_path):
@@ -54,9 +55,17 @@ def get_weather_data(station_name, base_year):
     all_data = []
     progress_bar = st.progress(0, text="気象庁からデータを取得中...")
     
-    for i in range(12):
-        curr_month = (4 + i - 1) % 12 + 1
-        curr_year = base_year + 1 if curr_month <= 3 else base_year
+    # 開始月から終了月までの全月をリストアップ
+    months_to_fetch = []
+    curr = start_date.replace(day=1)
+    while curr <= end_date:
+        months_to_fetch.append((curr.year, curr.month))
+        if curr.month == 12:
+            curr = curr.replace(year=curr.year + 1, month=1)
+        else:
+            curr = curr.replace(month=curr.month + 1)
+    
+    for i, (curr_year, curr_month) in enumerate(months_to_fetch):
         
         url = (f"https://www.data.jma.go.jp/stats/etrn/view/daily_s1.php?"
                f"prec_no={prec_no}&block_no={block_no}&year={curr_year}&month={curr_month}&day=&view=")
@@ -79,7 +88,7 @@ def get_weather_data(station_name, base_year):
         except:
             continue
         
-        progress_bar.progress((i + 1) / 12)
+        progress_bar.progress((i + 1) / len(months_to_fetch))
         time.sleep(0.8)
 
     if not all_data:

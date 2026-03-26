@@ -64,10 +64,11 @@ if run_btn and uploaded_file:
             df_raw.index.name = 'Date'
             
             df_unit = (df_raw * 1000) / floor_area
-            base_year = df_raw.index[0].year
+            start_date = df_raw.index[0].date()
+            end_date = df_raw.index[-1].date()
 
             # 気象データの取得
-            df_weather = scraper.get_weather_data(target_station, base_year)
+            df_weather = scraper.get_weather_data(target_station, start_date, end_date)
             
             if df_weather is not None:
                 # クラスタリング
