@@ -81,7 +81,27 @@
 - クラスタ別の色分け表示
 - 気象・休日条件による色分け表示
 
-## 必要環境
+## 公開方法
+
+このアプリは GitHub にリポジトリを置き、Streamlit Community Cloud で公開する想定です。
+
+### 公開手順
+
+1. このプロジェクトを GitHub に push する
+2. Streamlit Community Cloud にログインする
+3. New app から GitHub リポジトリを選ぶ
+4. Branch を選び、Main file path に app.py を指定する
+5. Deploy を実行する
+
+デプロイ後は、Streamlit Community Cloud 上で Web アプリとして利用できます。
+
+### Streamlit Community Cloud での前提
+
+- 依存パッケージは [requirements.txt](requirements.txt) から自動でインストールされます
+- 実行エントリーポイントは [app.py](app.py) です
+- data フォルダ内のファイルもリポジトリに含めておく必要があります
+
+## ローカル確認用の環境
 
 - Python 3.8 以上
 
@@ -98,7 +118,7 @@
 - beautifulsoup4
 - jpholiday
 
-## セットアップ
+## ローカルセットアップ
 
 ### Windows PowerShell
 
@@ -116,13 +136,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 起動方法
+## ローカル起動方法
 
 ```bash
 streamlit run app.py
 ```
 
-起動後、ブラウザで Streamlit アプリが開きます。
+起動後、ブラウザで Streamlit アプリが開きます。ローカル確認用の手順であり、本番公開は Streamlit Community Cloud を想定しています。
 
 現在の実装では、最初に簡易パスワード入力があります。
 デフォルト値は [app.py](app.py) 内で PASSWORD = "acorn" として定義されています。
@@ -148,7 +168,7 @@ Date,00:00,00:30,01:00,01:30
 
 ## 使い方
 
-1. アプリを起動する
+1. GitHub 経由で公開した Streamlit アプリを開く
 2. パスワード画面でパスワードを入力する
 3. サイドバーから電力データ CSV をアップロードする
 4. 延床面積を入力する
@@ -206,4 +226,5 @@ Date,00:00,00:30,01:00,01:30
 
 - 気象データ取得は外部サイトの構造やネットワーク状態に依存します
 - 地点名は [data/stations.csv](data/stations.csv) の name 列と一致する必要があります
-- パスワードは [app.py](app.py) に固定値で書かれているため、本番用途では別管理にした方が安全です
+- パスワードは [app.py](app.py) に固定値で書かれているため、公開運用では secrets 管理などへ移した方が安全です
+- Streamlit Community Cloud 上では外部アクセスや実行時間に制約がかかる場合があります
