@@ -135,6 +135,32 @@ def inject_styles():
         [data-testid="stSidebar"] .stDownloadButton button {
             border-radius: 12px;
         }
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] span,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] div,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] small,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] span,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderFileName"] {
+            color: #f8fafc !important;
+            -webkit-text-fill-color: #f8fafc !important;
+            opacity: 1 !important;
+            font-weight: 700 !important;
+        }
+        [data-testid="stSidebar"] div[data-baseweb="input"] input,
+        [data-testid="stSidebar"] div[data-baseweb="base-input"] input,
+        [data-testid="stSidebar"] .stNumberInput input {
+            color: #0f172a !important;
+            -webkit-text-fill-color: #0f172a !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            opacity: 1 !important;
+            font-weight: 700 !important;
+        }
+        [data-testid="stSidebar"] input::placeholder {
+            color: #334155 !important;
+            -webkit-text-fill-color: #334155 !important;
+            opacity: 1 !important;
+        }
         div[data-baseweb="input"] input,
         div[data-baseweb="select"] input,
         div[data-baseweb="base-input"] input {
@@ -296,7 +322,6 @@ def render_sidebar_controls():
         k_input = None if auto_k else st.slider("クラスタ数 (k)", 2, 10, 4)
 
         run_btn = st.button("分析を実行", use_container_width=True)
-        st.caption("地点名は data/stations.csv にある名称と合わせてください。")
 
     return uploaded_file, floor_area, target_station, k_input, run_btn
 
