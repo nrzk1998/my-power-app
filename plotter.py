@@ -1,12 +1,60 @@
 # -*- coding: utf-8 -*-
-import matplotlib.pyplot as plt
+import calendar
+
 import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+
+DAY_TYPES = ['Weekday', 'Weekend']
+SEASONS_ORDER = ['Cooling', 'Intermediate', 'Heating']
+SEASON_COLORS = {
+    'Cooling': '#1f77b4',
+    'Intermediate': '#e2e2e2',
+    'Heating': '#ff7f0e',
+}
+WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 def get_power_cols(df):
     """時間軸列のみを抽出"""
     return [c for c in df.columns if ":" in str(c)]
+
+
+def _plot_daily_curves(ax, data, power_cols, color, alpha):
+    power_data = data[power_cols]
+    for i in range(len(power_data)):
+        ax.plot(power_cols, power_data.iloc[i], color=color, alpha=alpha, lw=0.5)
+
+
+def _format_breakdown_table(cluster_df):
+    comp = cluster_df.groupby(['DayType', 'Season']).size().unstack(fill_value=0)
+
+    for day_type in DAY_TYPES:
+        if day_type not in comp.index:
+            comp.loc[day_type] = 0
+    for season in SEASONS_ORDER:
+        if season not in comp.columns:
+            comp[season] = 0
+
+    return comp.reindex(index=DAY_TYPES, columns=SEASONS_ORDER)
+
+
+def _get_calendar_cell_color(row, cmap, mode):
+    if mode == 'cluster':
+        cid = row['Cluster']
+        return cmap((int(cid) - 1) % 10) if pd.notna(cid) else 'white'
+
+    if row['IsHoliday']:
+        return 'royalblue'
+    if row['Season'] in ['Cooling', 'Heating']:
+        return 'tomato'
+    return 'darkgrey'
+
+
+def _draw_weekday_labels(ax):
+    for ci, day_name in enumerate(WEEKDAY_LABELS):
+        ax.text(ci + 0.5, -0.5, day_name, ha='center', va='center', fontsize=9, fontweight='bold')
 
 def create_combined_report(final_df, k_auto):
     """Step 1, 2, 3 と 内訳を1枚の画像に統合"""
@@ -14,11 +62,7 @@ def create_combined_report(final_df, k_auto):
     cluster_means = final_df.groupby('Cluster')[power_cols].mean()
     cluster_counts = final_df['Cluster'].value_counts()
     cmap = plt.get_cmap('tab10')
-    
-    # グラフ用色設定
-    season_colors = {'Cooling': '#1f77b4', 'Intermediate': '#e2e2e2', 'Heating': '#ff7f0e'}
-    seasons_order = ['Cooling', 'Intermediate', 'Heating']
-    
+
     time_labels = power_cols
     x_ticks = np.arange(0, len(time_labels), 4)
     x_labels = [time_labels[i] for i in x_ticks]
@@ -28,8 +72,7 @@ def create_combined_report(final_df, k_auto):
 
     # --- Step 1: Raw Data ---
     ax1 = fig.add_subplot(gs[0, :])
-    for i in range(len(final_df)):
-        ax1.plot(time_labels, final_df[power_cols].iloc[i], color='gray', alpha=0.15, lw=0.5)
+    _plot_daily_curves(ax1, final_df, power_cols, color='gray', alpha=0.15)
     ax1.set_title("Step 1: Raw Daily Power Consumption (Total 365 days)", fontsize=16, fontweight='bold')
     ax1.set_ylabel("Power Intensity [Wh/sqm]")
     ax1.grid(True, linestyle='--', alpha=0.3)
@@ -39,8 +82,7 @@ def create_combined_report(final_df, k_auto):
     for cid in sorted(final_df['Cluster'].unique()):
         c_color = cmap((cid-1) % 10)
         c_data = final_df[final_df['Cluster'] == cid][power_cols]
-        for i in range(len(c_data)):
-            ax2.plot(time_labels, c_data.iloc[i], color=c_color, alpha=0.25, lw=0.5)
+        _plot_daily_curves(ax2, c_data, power_cols, color=c_color, alpha=0.25)
     ax2.set_title(f"Step 2: Daily Curves Colored by Cluster (k={k_auto})", fontsize=16, fontweight='bold')
     ax2.set_ylabel("Power Intensity [Wh/sqm]")
     ax2.grid(True, linestyle='--', alpha=0.3)
@@ -63,31 +105,20 @@ def create_combined_report(final_df, k_auto):
     for i, cid in enumerate(sorted(final_df['Cluster'].unique())):
         ax_sub = fig.add_subplot(gs[3, i])
         c_data = final_df[final_df['Cluster'] == cid]
-        # DayTypeとSeasonで集計
-        comp = c_data.groupby(['DayType', 'Season']).size().unstack(fill_value=0)
-        
-        # 欠損インデックスの補完
-        for t in ['Weekday', 'Weekend']:
-            if t not in comp.index: comp.loc[t] = 0
-        for s in seasons_order:
-            if s not in comp.columns: comp[s] = 0
-        comp = comp.reindex(index=['Weekday', 'Weekend'], columns=seasons_order)
+        comp = _format_breakdown_table(c_data)
 
         bottom = np.zeros(2)
-        for s in seasons_order:
-            ax_sub.bar(comp.index, comp[s], bottom=bottom, color=season_colors[s], edgecolor='white')
-            bottom += comp[s]
+        for season in SEASONS_ORDER:
+            ax_sub.bar(comp.index, comp[season], bottom=bottom, color=SEASON_COLORS[season], edgecolor='white')
+            bottom += comp[season]
 
         ax_sub.set_title(f"Cluster {cid}", color=cmap(i % 10), fontweight='bold')
         ax_sub.set_ylim(0, y_limit_sub)
         if i != 0: ax_sub.set_yticklabels([])
-        if i == k_auto - 1: ax_sub.legend(seasons_order, title="Season", loc='upper left', bbox_to_anchor=(1, 1))
+        if i == k_auto - 1: ax_sub.legend(SEASONS_ORDER, title="Season", loc='upper left', bbox_to_anchor=(1, 1))
         ax_sub.grid(axis='y', linestyle=':', alpha=0.6)
 
     return fig
-
-import calendar
-import matplotlib.patches as patches
 
 # 日曜始まりに設定
 calendar.setfirstweekday(calendar.SUNDAY)
@@ -101,7 +132,7 @@ def create_calendar_report(final_df):
     
     fig, axes = plt.subplots(nrows=n_months, ncols=2, figsize=(13.3, 22))
     if n_months == 1: axes = np.expand_dims(axes, axis=0)
-    
+
     cmap = plt.get_cmap('tab10')
 
     def draw_month_ax(ax, month_df, cal, mode):
@@ -109,33 +140,20 @@ def create_calendar_report(final_df):
         ax.set_ylim(0, len(cal))
         ax.invert_yaxis()
         ax.axis('off')
-        
-        # 曜日ラベル
-        days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        for ci, day_name in enumerate(days):
-            ax.text(ci + 0.5, -0.5, day_name, ha='center', va='center', fontsize=9, fontweight='bold')
+
+        _draw_weekday_labels(ax)
 
         for ri, week in enumerate(cal):
             for ci, day in enumerate(week):
-                if day == 0: continue
-                
+                if day == 0:
+                    continue
+
                 day_data = month_df[month_df.index.day == day]
                 if day_data.empty:
-                    color = "white"
+                    color = 'white'
                 else:
                     row = day_data.iloc[0]
-                    if mode == 'cluster':
-                        # 左側：クラスタベース
-                        cid = row['Cluster']
-                        color = cmap((int(cid)-1) % 10) if pd.notna(cid) else "white"
-                    else:
-                        # 右側：気象・休日ベース (参考コードのロジックを適用)
-                        if row['IsHoliday']:
-                            color = "royalblue"
-                        elif row['Season'] in ['Cooling', 'Heating']: # 内部のSeason名(Cooling/Heating)に対応
-                            color = "tomato"
-                        else:
-                            color = "darkgrey"
+                    color = _get_calendar_cell_color(row, cmap, mode)
 
                 ax.add_patch(plt.Rectangle((ci, ri), 1, 1, facecolor=color, edgecolor='white', linewidth=1))
                 # 日付の文字（白固定）
