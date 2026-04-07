@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import io
+import os
 
+from docx import Document
+from docx.shared import Inches
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
@@ -18,7 +21,9 @@ STATE_DEFAULTS = {
     'analyzed': False,
     'final_df': None,
     'fig_report': None,
+    'fig_report_buf': None,
     'fig_cal_buf': None,
+    'input_filename': "",
     'k_final': None,
     'target_station': "",
 }
@@ -222,12 +227,35 @@ def read_power_data(uploaded_file, floor_area):
     return df_raw, df_unit
 
 
+def create_figure_buffer(figure):
+    buf = io.BytesIO()
+    figure.savefig(buf, format="png", bbox_inches='tight', dpi=150)
+    return buf.getvalue()
+
+
 def create_calendar_buffer(final_df):
     fig_cal = plotter.create_calendar_report(final_df)
-    buf = io.BytesIO()
-    fig_cal.savefig(buf, format="png", bbox_inches='tight', dpi=150)
+    fig_cal_buf = create_figure_buffer(fig_cal)
     plt.close(fig_cal)
-    return buf.getvalue()
+    return fig_cal_buf
+
+
+def create_word_report_buffer(input_filename, target_station, k_final, report_buf, calendar_buf):
+    document = Document()
+    document.add_heading('電力消費クラスタリングレポート', level=0)
+    document.add_paragraph(f'対象ファイル: {input_filename}')
+    document.add_paragraph(f'対象地点: {target_station}')
+    document.add_paragraph(f'クラスタ数: {k_final}')
+
+    document.add_heading('クラスタリング結果', level=1)
+    document.add_picture(io.BytesIO(report_buf), width=Inches(6.5))
+
+    document.add_heading('カレンダー画像', level=1)
+    document.add_picture(io.BytesIO(calendar_buf), width=Inches(6.5))
+
+    output = io.BytesIO()
+    document.save(output)
+    return output.getvalue()
 
 
 def build_analysis_result(uploaded_file, floor_area, target_station, k_input):
@@ -251,10 +279,14 @@ def build_analysis_result(uploaded_file, floor_area, target_station, k_input):
     final_df = df_raw.join(df_weather, how='inner')
     final_df['DayType'] = final_df['IsHoliday'].map({False: 'Weekday', True: 'Weekend'})
 
+    fig_report = plotter.create_combined_report(report_df, k_final)
+
     return {
         'final_df': final_df,
-        'fig_report': plotter.create_combined_report(report_df, k_final),
+        'fig_report': fig_report,
+        'fig_report_buf': create_figure_buffer(fig_report),
         'fig_cal_buf': create_calendar_buffer(final_df),
+        'input_filename': os.path.splitext(uploaded_file.name)[0],
         'k_final': k_final,
         'target_station': target_station,
     }
@@ -330,6 +362,21 @@ def render_sidebar_controls():
 
 def render_results():
     render_summary()
+
+    st.sidebar.markdown("---")
+    st.sidebar.download_button(
+        label="Word レポートを保存",
+        data=create_word_report_buffer(
+            st.session_state.input_filename,
+            st.session_state.target_station,
+            st.session_state.k_final,
+            st.session_state.fig_report_buf,
+            st.session_state.fig_cal_buf,
+        ),
+        file_name=f"report_{st.session_state.input_filename}.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        use_container_width=True,
+    )
 
     report_tab, calendar_tab, data_tab = st.tabs(["Analysis Report", "Calendar Preview", "Merged Raw Data"])
 
