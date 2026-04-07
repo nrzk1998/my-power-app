@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import io
-import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -20,7 +19,6 @@ STATE_DEFAULTS = {
     'final_df': None,
     'fig_report': None,
     'fig_cal_buf': None,
-    'input_filename': "",
     'k_final': None,
     'target_station': "",
 }
@@ -244,15 +242,19 @@ def build_analysis_result(uploaded_file, floor_area, target_station, k_input):
     clusters, k_final = analyzer.perform_clustering(df_unit, k_manual=k_input)
     df_unit = df_unit.copy()
     df_unit['Cluster'] = clusters
+    df_raw = df_raw.copy()
+    df_raw['Cluster'] = clusters
 
-    final_df = df_unit.join(df_weather, how='inner')
+    report_df = df_unit.join(df_weather, how='inner')
+    report_df['DayType'] = report_df['IsHoliday'].map({False: 'Weekday', True: 'Weekend'})
+
+    final_df = df_raw.join(df_weather, how='inner')
     final_df['DayType'] = final_df['IsHoliday'].map({False: 'Weekday', True: 'Weekend'})
 
     return {
         'final_df': final_df,
-        'fig_report': plotter.create_combined_report(final_df, k_final),
+        'fig_report': plotter.create_combined_report(report_df, k_final),
         'fig_cal_buf': create_calendar_buffer(final_df),
-        'input_filename': os.path.splitext(uploaded_file.name)[0],
         'k_final': k_final,
         'target_station': target_station,
     }
@@ -326,31 +328,10 @@ def render_sidebar_controls():
     return uploaded_file, floor_area, target_station, k_input, run_btn
 
 
-def render_downloads():
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### Export")
-    csv_data = st.session_state.final_df.to_csv(encoding='utf-8-sig')
-    st.sidebar.download_button(
-        label="解析結果 CSV を保存",
-        data=csv_data,
-        file_name=f"analysis_{st.session_state.input_filename}.csv",
-        mime="text/csv",
-        use_container_width=True,
-    )
-    st.sidebar.download_button(
-        label="カレンダー PNG を保存",
-        data=st.session_state.fig_cal_buf,
-        file_name=f"calendar_{st.session_state.input_filename}.png",
-        mime="image/png",
-        use_container_width=True,
-    )
-
-
 def render_results():
     render_summary()
-    render_downloads()
 
-    report_tab, calendar_tab, data_tab = st.tabs(["Analysis Report", "Calendar Preview", "Merged Data"])
+    report_tab, calendar_tab, data_tab = st.tabs(["Analysis Report", "Calendar Preview", "Merged Raw Data"])
 
     with report_tab:
         st.subheader("パターン分析レポート")
@@ -361,7 +342,7 @@ def render_results():
         st.image(st.session_state.fig_cal_buf, use_container_width=True)
 
     with data_tab:
-        st.subheader("結合済みデータ")
+        st.subheader("結合済み RAW データ")
         st.dataframe(st.session_state.final_df, use_container_width=True, height=460)
 
 
