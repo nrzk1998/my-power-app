@@ -140,8 +140,8 @@ def inject_styles():
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] small,
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] span,
         [data-testid="stSidebar"] [data-testid="stFileUploaderFileName"] {
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
+            color: #0f172a !important;
+            -webkit-text-fill-color: #0f172a !important;
             opacity: 1 !important;
             font-weight: 700 !important;
         }
