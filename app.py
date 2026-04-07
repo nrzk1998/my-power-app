@@ -136,7 +136,26 @@ def inject_styles():
             border: none;
         }
         [data-testid="stSidebar"] .stDownloadButton button {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+            color: #f8fafc !important;
+            -webkit-text-fill-color: #f8fafc !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
             border-radius: 12px;
+            font-weight: 800;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+        }
+        [data-testid="stSidebar"] .stDownloadButton button:hover {
+            background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.24) !important;
+        }
+        [data-testid="stSidebar"] .stDownloadButton button p,
+        [data-testid="stSidebar"] .stDownloadButton button span,
+        [data-testid="stSidebar"] .stDownloadButton button div {
+            color: #f8fafc !important;
+            -webkit-text-fill-color: #f8fafc !important;
+            font-weight: 800 !important;
         }
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button,
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small,
