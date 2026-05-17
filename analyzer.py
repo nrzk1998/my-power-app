@@ -8,11 +8,11 @@ def perform_clustering(df_unit, k_manual=None):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(df_unit)
 
-    # PCA（全成分→累積寄与率80%で絞り込み）
+    # PCA（全成分→Kaiser基準で絞り込み）
     pca = PCA()
     X_pca = pca.fit_transform(X_scaled)
-    cumvar = np.cumsum(pca.explained_variance_ratio_)
-    n_components = int(np.searchsorted(cumvar, 0.80)) + 1
+    # 固有値1.0以上の成分のみ抽出
+    n_components = sum(pca.explained_variance_ >= 1.0)
     X_pca = X_pca[:, :n_components]
 
     # 階層クラスタリング
