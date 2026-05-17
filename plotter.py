@@ -46,10 +46,10 @@ def _format_breakdown_table(cluster_df):
     return comp.reindex(index=DAY_TYPES, columns=SEASONS_ORDER)
 
 
-def _get_calendar_cell_color(row, cmap, mode):
+def _get_calendar_cell_color(row, mode):
     if mode == 'cluster':
         cid = row['Cluster']
-        return cmap((int(cid) - 1) % 10) if pd.notna(cid) else 'white'
+        return CLUSTER_COLORS[(int(cid) - 1) % len(CLUSTER_COLORS)] if pd.notna(cid) else 'white'
 
     if row['IsHoliday']:
         return 'royalblue'
@@ -137,8 +137,6 @@ def create_calendar_report(final_df):
     fig, axes = plt.subplots(nrows=n_months, ncols=2, figsize=(13.3, 22))
     if n_months == 1: axes = np.expand_dims(axes, axis=0)
 
-    cmap = plt.get_cmap('tab10')
-
     def draw_month_ax(ax, month_df, cal, mode):
         ax.set_xlim(0, 7)
         ax.set_ylim(0, len(cal))
@@ -157,7 +155,7 @@ def create_calendar_report(final_df):
                     color = 'white'
                 else:
                     row = day_data.iloc[0]
-                    color = _get_calendar_cell_color(row, cmap, mode)
+                    color = _get_calendar_cell_color(row, mode)
 
                 ax.add_patch(plt.Rectangle((ci, ri), 1, 1, facecolor=color, edgecolor='white', linewidth=1))
                 # 日付の文字（白固定）
