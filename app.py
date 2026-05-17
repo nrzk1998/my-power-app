@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import importlib
 import io
 import os
 
@@ -11,6 +12,9 @@ import streamlit as st
 import analyzer
 import plotter
 import scraper
+
+# Streamlit のモジュールキャッシュを回避するために毎回リロード
+importlib.reload(plotter)
 
 
 st.set_page_config(page_title="電力分析レポート", layout="wide")
