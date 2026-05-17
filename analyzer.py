@@ -12,7 +12,7 @@ def perform_clustering(df_unit, k_manual=None):
     n_components = int(np.searchsorted(cumvar, 0.80)) + 1
     pca_scores = pca_scores_full[:, :n_components]
 
-    Z = linkage(pca_scores, method="ward", metric="euclidean")
+    Z = linkage(pca_scores, method="average", metric="euclidean")
 
     if k_manual:
         k_final = k_manual
