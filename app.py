@@ -34,128 +34,126 @@ def inject_styles():
         """
         <style>
         .stApp {
-            background:
-                radial-gradient(circle at top left, rgba(41, 98, 255, 0.12), transparent 28%),
-                radial-gradient(circle at top right, rgba(0, 150, 136, 0.14), transparent 30%),
-                linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+            background-color: #f5f5f2;
         }
         .block-container {
-            padding-top: 2rem;
-            padding-bottom: 3rem;
-            max-width: 1400px;
+            padding-top: 2.5rem;
+            padding-bottom: 3.5rem;
+            max-width: 1200px;
         }
         .hero-panel {
-            padding: 1.8rem 2rem;
-            border-radius: 24px;
-            color: #0f172a;
-            background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(226, 240, 255, 0.9));
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
-            margin-bottom: 1.25rem;
+            padding: 2.5rem 2.5rem;
+            border-radius: 3px;
+            color: #1a1a1a;
+            background: #ffffff;
+            border: 1px solid #e0dedd;
+            margin-bottom: 1.5rem;
         }
         .hero-kicker {
-            font-size: 0.78rem;
-            letter-spacing: 0.12em;
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: #0f766e;
-            margin-bottom: 0.65rem;
-            font-weight: 700;
+            color: #4f7a5e;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
         }
         .hero-title {
-            font-size: 2.2rem;
-            line-height: 1.1;
-            font-weight: 800;
+            font-size: 2rem;
+            line-height: 1.2;
+            font-weight: 600;
             margin: 0;
+            color: #1a1a1a;
         }
         .hero-copy {
-            margin-top: 0.9rem;
-            font-size: 1rem;
-            line-height: 1.7;
-            color: #334155;
-            max-width: 780px;
+            margin-top: 1rem;
+            font-size: 0.93rem;
+            line-height: 1.85;
+            color: #555550;
+            max-width: 720px;
         }
         .status-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0.9rem;
-            margin: 1rem 0 1.4rem;
+            gap: 1rem;
+            margin: 1.25rem 0 1.5rem;
         }
         .status-card {
-            background: rgba(255, 255, 255, 0.78);
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            border-radius: 18px;
-            padding: 1rem 1.1rem;
-            backdrop-filter: blur(10px);
+            background: #ffffff;
+            border: 1px solid #e0dedd;
+            border-radius: 3px;
+            padding: 1.25rem 1.5rem;
         }
         .status-label {
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #64748b;
-            margin-bottom: 0.45rem;
-            font-weight: 700;
+            letter-spacing: 0.14em;
+            color: #9a9992;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
         .status-value {
             font-size: 1.35rem;
-            color: #0f172a;
-            font-weight: 800;
+            color: #1a1a1a;
+            font-weight: 600;
         }
         .section-card {
-            background: rgba(255, 255, 255, 0.86);
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            border-radius: 22px;
-            padding: 1.2rem 1.3rem;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+            background: #ffffff;
+            border: 1px solid #e0dedd;
+            border-radius: 3px;
+            padding: 1.5rem;
         }
         .empty-state {
-            padding: 1.4rem 1.5rem;
-            border-radius: 22px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(230, 244, 241, 0.92));
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+            padding: 2.5rem;
+            border-radius: 3px;
+            background: #ffffff;
+            border: 1px solid #e0dedd;
         }
         .login-panel {
-            max-width: 560px;
-            margin: 3.5rem auto 0;
-            padding: 1.7rem 1.8rem;
-            border-radius: 24px;
-            background: rgba(255,255,255,0.92);
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
+            max-width: 480px;
+            margin: 4rem auto 0;
+            padding: 2.5rem;
+            border-radius: 3px;
+            background: #ffffff;
+            border: 1px solid #e0dedd;
         }
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #0f172a 0%, #132238 100%);
-            border-right: 1px solid rgba(255,255,255,0.08);
+            background: #ffffff;
+            border-right: 1px solid #e0dedd;
         }
         [data-testid="stSidebar"] * {
-            color: #e2e8f0;
+            color: #1a1a1a;
         }
         [data-testid="stSidebar"] .stButton button {
-            background: linear-gradient(135deg, #0f766e, #1d4ed8);
-            color: white;
+            background: #4f7a5e;
+            color: #ffffff;
             border: none;
+            border-radius: 2px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+        [data-testid="stSidebar"] .stButton button:hover {
+            background: #3e6349 !important;
         }
         [data-testid="stSidebar"] .stDownloadButton button {
-            background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-            border: 1px solid rgba(255, 255, 255, 0.16) !important;
-            border-radius: 12px;
-            font-weight: 800;
-            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
-        }
-        [data-testid="stSidebar"] .stDownloadButton button:hover {
-            background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+            background: #4f7a5e !important;
             color: #ffffff !important;
             -webkit-text-fill-color: #ffffff !important;
-            border-color: rgba(255, 255, 255, 0.24) !important;
+            border: none !important;
+            border-radius: 2px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+        [data-testid="stSidebar"] .stDownloadButton button:hover {
+            background: #3e6349 !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
         [data-testid="stSidebar"] .stDownloadButton button p,
         [data-testid="stSidebar"] .stDownloadButton button span,
         [data-testid="stSidebar"] .stDownloadButton button div {
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-            font-weight: 800 !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            font-weight: 600 !important;
         }
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button,
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small,
@@ -164,29 +162,27 @@ def inject_styles():
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] small,
         [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] span,
         [data-testid="stSidebar"] [data-testid="stFileUploaderFileName"] {
-            color: #0f172a !important;
-            -webkit-text-fill-color: #0f172a !important;
+            color: #1a1a1a !important;
+            -webkit-text-fill-color: #1a1a1a !important;
             opacity: 1 !important;
-            font-weight: 700 !important;
         }
         [data-testid="stSidebar"] div[data-baseweb="input"] input,
         [data-testid="stSidebar"] div[data-baseweb="base-input"] input,
         [data-testid="stSidebar"] .stNumberInput input {
-            color: #0f172a !important;
-            -webkit-text-fill-color: #0f172a !important;
-            background: rgba(255, 255, 255, 0.98) !important;
+            color: #1a1a1a !important;
+            -webkit-text-fill-color: #1a1a1a !important;
+            background: #f5f5f2 !important;
             opacity: 1 !important;
-            font-weight: 700 !important;
         }
         [data-testid="stSidebar"] input::placeholder {
-            color: #334155 !important;
-            -webkit-text-fill-color: #334155 !important;
+            color: #777770 !important;
+            -webkit-text-fill-color: #777770 !important;
             opacity: 1 !important;
         }
         div[data-baseweb="input"] input,
         div[data-baseweb="select"] input,
         div[data-baseweb="base-input"] input {
-            border-radius: 12px;
+            border-radius: 2px;
         }
         </style>
         """,
@@ -215,11 +211,10 @@ def check_password():
     st.markdown(
         """
         <div class="login-panel">
-            <div class="hero-kicker">Protected Workspace</div>
+            <div class="hero-kicker">Power Analysis</div>
             <h1 class="hero-title">電力分析ダッシュボード</h1>
             <p class="hero-copy">
-                解析機能に入る前にパスワードを入力してください。レポート生成、クラスタリング、
-                気象データ連携をこの画面から実行できます。
+                解析機能に入る前にパスワードを入力してください。
             </p>
         </div>
         """,
@@ -332,7 +327,7 @@ def render_hero():
     st.markdown(
         """
         <div class="hero-panel">
-            <div class="hero-kicker">Power Clustering Studio</div>
+            <div class="hero-kicker">Power Clustering</div>
             <h1 class="hero-title">電力消費クラスタリングツール</h1>
             <p class="hero-copy">
                 日別の消費パターンをクラスタリングし、気象条件や休日判定と合わせて可視化します。
@@ -417,8 +412,8 @@ def render_empty_state():
         """
         <div class="empty-state">
             <div class="hero-kicker">Ready</div>
-            <h3 style="margin:0;color:#0f172a;">分析条件を設定するとここに結果が表示されます</h3>
-            <p style="margin:0.9rem 0 0;color:#475569;line-height:1.7;">
+            <h3 style="margin:0;color:#1a1a1a;font-weight:600;">分析条件を設定するとここに結果が表示されます</h3>
+            <p style="margin:1rem 0 0;color:#555550;line-height:1.85;font-size:0.93rem;">
                 左のサイドバーで電力データ CSV、延床面積、地点名、クラスタ数の条件を指定して
                 分析を実行してください。結果はレポート、カレンダー、結合データの3つのビューで確認できます。
             </p>
