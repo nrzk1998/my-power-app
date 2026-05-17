@@ -61,7 +61,7 @@ def create_combined_report(final_df, k_auto):
     power_cols = get_power_cols(final_df)
     cluster_means = final_df.groupby('Cluster')[power_cols].mean()
     cluster_counts = final_df['Cluster'].value_counts()
-    cmap = plt.get_cmap('tab10')
+    cmap = plt.get_cmap('tab20')
 
     time_labels = power_cols
     x_ticks = np.arange(0, len(time_labels), 4)
