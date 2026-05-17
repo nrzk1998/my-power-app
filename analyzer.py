@@ -1,19 +1,16 @@
-from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from scipy.cluster.hierarchy import linkage, fcluster
 import numpy as np
 
 def perform_clustering(df_unit, k_manual=None):
-    scaler = StandardScaler()
-    X_std = scaler.fit_transform(df_unit)
-
     # PCAの実行（全成分）
     pca = PCA()
-    pca_scores_full = pca.fit_transform(X_std)
-    
-    # 固有値1.0以上の成分のみ抽出
-    n_components = sum(pca.explained_variance_ >= 1.0)
-    pca_scores = pca_scores_full[:, :n_components] 
+    pca_scores_full = pca.fit_transform(df_unit)
+
+    # 累積寄与率80%以上の成分のみ抽出
+    cumvar = np.cumsum(pca.explained_variance_ratio_)
+    n_components = int(np.searchsorted(cumvar, 0.80)) + 1
+    pca_scores = pca_scores_full[:, :n_components]
 
     Z = linkage(pca_scores, method="ward", metric="euclidean")
 
