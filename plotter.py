@@ -99,6 +99,7 @@ def create_combined_report(final_df, k_auto):
                  label=f"Cluster {cid} (n={cluster_counts[cid]}d)", color=c_color, lw=4)
     ax3.set_title("Step 3: Cluster Centroids (Representative Patterns)", fontsize=16, fontweight='bold')
     ax3.set_ylabel("Power Intensity [Wh/sqm]")
+    ax3.set_ylim(bottom=0)
     ax3.set_xticks(x_ticks)
     ax3.set_xticklabels(x_labels)
     ax3.legend(loc='upper right', shadow=True)
