@@ -7,7 +7,12 @@
       "Bash(git pull *)",
       "Read(//c/Users/YUTA NARAZAKI/Desktop/受電マクロ/●本部管理棟/**)",
       "Bash(python3)",
-      "Bash(python3 -m pip install openpyxl --quiet)"
+      "Bash(python3 -m pip install openpyxl --quiet)",
+      "Bash(python -c ' *)",
+      "Bash(pip install *)",
+      "Bash(python convert_book1.py)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\YUTA NARAZAKI\\\\Desktop\\\\Ryoden\")",
+      "Bash(Select-Object Name, Length, LastWriteTime)"
     ]
   }
 }
