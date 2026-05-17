@@ -16,7 +16,7 @@ def perform_clustering(df_unit, k_manual=None):
     X_pca = X_pca[:, :n_components]
 
     # 階層クラスタリング
-    Z = linkage(X_pca, method="average", metric="euclidean")
+    Z = linkage(X_pca, method="ward", metric="euclidean")
 
     if k_manual:
         k = k_manual
