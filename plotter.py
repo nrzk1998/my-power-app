@@ -14,6 +14,12 @@ SEASON_COLORS = {
     'Intermediate': '#e2e2e2',
     'Heating': '#ff7f0e',
 }
+# 青・グレー・オレンジを除いたクラスター用カラーリスト
+CLUSTER_COLORS = [
+    '#2ca02c', '#d62728', '#9467bd', '#8c564b',
+    '#e377c2', '#bcbd22', '#17becf', '#98df8a',
+    '#ff9896', '#c5b0d5',
+]
 WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 def get_power_cols(df):
@@ -61,8 +67,6 @@ def create_combined_report(final_df, k_auto):
     power_cols = get_power_cols(final_df)
     cluster_means = final_df.groupby('Cluster')[power_cols].mean()
     cluster_counts = final_df['Cluster'].value_counts()
-    cmap = plt.get_cmap('tab20')
-
     time_labels = power_cols
     x_ticks = np.arange(0, len(time_labels), 4)
     x_labels = [time_labels[i] for i in x_ticks]
@@ -80,7 +84,7 @@ def create_combined_report(final_df, k_auto):
     # --- Step 2: Clustered Data ---
     ax2 = fig.add_subplot(gs[1, :], sharex=ax1)
     for cid in sorted(final_df['Cluster'].unique()):
-        c_color = cmap((cid-1) % 10)
+        c_color = CLUSTER_COLORS[(cid-1) % len(CLUSTER_COLORS)]
         c_data = final_df[final_df['Cluster'] == cid][power_cols]
         _plot_daily_curves(ax2, c_data, power_cols, color=c_color, alpha=0.25)
     ax2.set_title(f"Step 2: Daily Curves Colored by Cluster (k={k_auto})", fontsize=16, fontweight='bold')
@@ -90,8 +94,8 @@ def create_combined_report(final_df, k_auto):
     # --- Step 3: Cluster Centroids ---
     ax3 = fig.add_subplot(gs[2, :], sharex=ax1)
     for i, cid in enumerate(sorted(cluster_means.index)):
-        c_color = cmap(i % 10)
-        ax3.plot(time_labels, cluster_means.loc[cid], 
+        c_color = CLUSTER_COLORS[i % len(CLUSTER_COLORS)]
+        ax3.plot(time_labels, cluster_means.loc[cid],
                  label=f"Cluster {cid} (n={cluster_counts[cid]}d)", color=c_color, lw=4)
     ax3.set_title("Step 3: Cluster Centroids (Representative Patterns)", fontsize=16, fontweight='bold')
     ax3.set_ylabel("Power Intensity [Wh/sqm]")
@@ -112,7 +116,7 @@ def create_combined_report(final_df, k_auto):
             ax_sub.bar(comp.index, comp[season], bottom=bottom, color=SEASON_COLORS[season], edgecolor='white')
             bottom += comp[season]
 
-        ax_sub.set_title(f"Cluster {cid}", color=cmap(i % 10), fontweight='bold')
+        ax_sub.set_title(f"Cluster {cid}", color=CLUSTER_COLORS[i % len(CLUSTER_COLORS)], fontweight='bold')
         ax_sub.set_ylim(0, y_limit_sub)
         if i != 0: ax_sub.set_yticklabels([])
         if i == k_auto - 1: ax_sub.legend(SEASONS_ORDER, title="Season", loc='upper left', bbox_to_anchor=(1, 1))
