@@ -234,6 +234,7 @@ def check_password():
 def read_power_data(uploaded_file, floor_area):
     df_raw = pd.read_csv(uploaded_file, index_col=0)
     df_raw = df_raw[df_raw.index.notna()]
+    df_raw = df_raw.dropna()
     df_raw.index = pd.to_datetime(df_raw.index)
     df_raw.index.name = 'Date'
 
