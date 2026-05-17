@@ -37,9 +37,15 @@ def _iter_target_months(start_date, end_date):
     return months
 
 
+def _is_amedas(block_no):
+    # 4桁 → AMeDAS、5桁（47xxx）→ 気象官署
+    return len(block_no) <= 4
+
+
 def _build_weather_url(prec_no, block_no, year, month):
+    view_type = "daily_a1" if _is_amedas(block_no) else "daily_s1"
     return (
-        "https://www.data.jma.go.jp/stats/etrn/view/daily_s1.php?"
+        f"https://www.data.jma.go.jp/stats/etrn/view/{view_type}.php?"
         f"prec_no={prec_no}&block_no={block_no}&year={year}&month={month}&day=&view="
     )
 
@@ -55,16 +61,21 @@ def _fetch_monthly_weather_data(prec_no, block_no, year, month):
     if not table:
         return []
 
+    # AMeDAS(a1): 気温は4列目、気象官署(s1): 気温は6列目
+    temp_col = 4 if _is_amedas(block_no) else 6
+
     rows = []
     for tr in table.select("tr")[4:]:
         tds = tr.find_all("td")
         if not tds or not tds[0].string:
             continue
-
-        rows.append({
-            "Date": datetime.date(year, month, int(tds[0].string)),
-            "AverageTemperature": _parse_temperature(tds[6].string),
-        })
+        try:
+            rows.append({
+                "Date": datetime.date(year, month, int(tds[0].string)),
+                "AverageTemperature": _parse_temperature(tds[temp_col].string),
+            })
+        except (ValueError, AttributeError, IndexError):
+            continue
 
     return rows
 
